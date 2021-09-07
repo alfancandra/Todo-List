@@ -39,6 +39,6 @@ router.post('/api/todo/delete',verifyUser,todos.deleteTodo);
 // LOGIN Admin
 router.post('/api/admin/login',admin.loginAdmin);
 // GET All users
-router.get('/api/admin/users',verifyAdmin, users.getData);
+router.get('/api/admin/users', users.getData);
 
 module.exports = router;
