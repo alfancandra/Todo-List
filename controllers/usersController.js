@@ -17,80 +17,101 @@ pool.on('error',(err)=> {
 module.exports ={
     // Ambil data semua Users
     getData(req,res){
-        pool.getConnection(function(err, connection) {
-            if (err) throw err;
-            connection.query(
-                `
-                SELECT * FROM users;
-                `
-            , function (error, results) {
-                if(error) throw error;  
-                res.send({ 
-                    success: true, 
-                    message: 'Berhasil ambil data!',
-                    data: results 
+        try{
+            pool.getConnection(function(err, connection) {
+                if (err) throw err;
+                connection.query(
+                    `
+                    SELECT email,fullname FROM users;
+                    `
+                , function (error, results) {
+                    if(error) throw error;  
+                    res.send({ 
+                        success: true, 
+                        message: 'Berhasil ambil data!',
+                        data: results 
+                    });
                 });
+                connection.release();
             });
-            connection.release();
-        })
+        }catch(e){
+            res.status(404).json({
+                success: false, 
+                message: 'Gagal!',
+            });
+        }
     },
     // Ambil data users berdasarkan ID
     getDataByID(req,res){
-        let id = req.params.id;
-        pool.getConnection(function(err, connection) {
-            if (err) throw err;
-            connection.query(
-                `
-                SELECT * FROM users WHERE id = ?;
-                `
-            , [id],
-            function (error, results) {
-                if(error) throw error;  
-                res.send({ 
-                    success: true, 
-                    message: 'Berhasil ambil data!',
-                    data: results
+        try{
+            let id = req.params.id;
+            pool.getConnection(function(err, connection) {
+                if (err) throw err;
+                connection.query(
+                    `
+                    SELECT * FROM users WHERE id = ?;
+                    `
+                , [id],
+                function (error, results) {
+                    if(error) throw error;  
+                    res.send({ 
+                        success: true, 
+                        message: 'Berhasil ambil data!',
+                        data: results
+                    });
                 });
+                connection.release();
             });
-            connection.release();
-        })
+        }catch(e){
+            res.status(404).json({
+                success: false, 
+                message: 'Gagal!',
+            });
+        }
     },
     // Simpan data users
     addData(req,res){
-        bcrypt.hash(req.body.password,10,(err,hash)=>{
-            if(err){
-                return res.status(500).json({
-                    error: err
-                });
-            }else{
-                
-                let data = {
-                    email : req.body.email,
-                    password : hash,
-                    fullname : req.body.fullname,
-                    created_at : new Date(),
-                    updated_at : new Date()
-                }
-                pool.getConnection(function(err, connection) {
-                    if (err) throw err;
-                    connection.query(
-                        `
-                        INSERT INTO users SET ?
-                        `
-                    , [
-                        data
-                    ],
-                    function (error, results) {
-                        if(error) throw error;  
-                        res.send({ 
-                            success: true, 
-                            message: 'Berhasil tambah data!',
-                        });
+        try{
+            bcrypt.hash(req.body.password,10,(err,hash)=>{
+                if(err){
+                    return res.status(500).json({
+                        error: err
                     });
-                    connection.release();
-                })
-            }
-        });
+                }else{
+                    
+                    let data = {
+                        email : req.body.email,
+                        password : hash,
+                        fullname : req.body.fullname,
+                        created_at : new Date(),
+                        updated_at : new Date()
+                    }
+                    pool.getConnection(function(err, connection) {
+                        if (err) throw err;
+                        connection.query(
+                            `
+                            INSERT INTO users SET ?
+                            `
+                        , [
+                            data
+                        ],
+                        function (error, results) {
+                            if(error) throw error;  
+                            res.send({ 
+                                success: true, 
+                                message: 'Berhasil tambah data!',
+                            });
+                        });
+                        connection.release();
+                    })
+                }
+            });
+        }catch(e){
+            res.status(404).json({
+                success: false, 
+                message: 'Gagal!',
+            });
+        }
         
     },
     // Login Users
@@ -108,29 +129,35 @@ module.exports ={
                 email
             ],
             function (error, results) {
-                if(error) throw error;
-                bcrypt.compare(password,results[0].password,(err,result)=>{
-                    if(err){
-                        return res.status(401).json({
-                            message: 'Auth Failed'
-                        });
-                    }
-                    let role_id = results[0].role_id;
-                    if(result && role_id==0){
-                        const token = jwt.sign({id:results[0].id},process.env.USER_KEY);
-                        res.header('auth-token',token);
-                        res.send(token);
-                        // return res.status(200).json({
-                        //     message: 'Auth Success',
-                        //     data: results
-                        // })
-                    }else{
-                        res.status(401).json({
-                            message: 'Auth Failed'
-                        });
-                    }
-                    
-                });
+                try{
+                    if(error) throw error;
+                    bcrypt.compare(password,results[0].password,(err,result)=>{
+                        if(err){
+                            return res.status(401).json({
+                                message: 'Auth Failed'
+                            });
+                        }
+                        let role_id = results[0].role_id;
+                        if(result && role_id==0){
+                            const token = jwt.sign({id:results[0].id},process.env.USER_KEY);
+                            res.header('auth-token',token);
+                            res.send(token);
+                            // return res.status(200).json({
+                            //     message: 'Auth Success',
+                            //     data: results
+                            // })
+                        }else{
+                            res.status(401).json({
+                                message: 'Auth Failed'
+                            });
+                        }
+                        
+                    });
+                }catch(e){
+                    res.status(401).json({
+                        message: 'Auth Failed'
+                    }); 
+                }
             });
             connection.release();
         })
@@ -252,11 +279,5 @@ module.exports ={
                 message: 'Gagal!',
             });
         }
-    },
-    getTodo(req,res){
-        res.status(200).json({
-            success: true, 
-            message: 'Sukses!',
-        });
     }
 }
