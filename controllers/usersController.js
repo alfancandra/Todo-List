@@ -246,6 +246,7 @@ module.exports ={
                         res.send({ 
                             success: true, 
                             message: 'Lanjut Reset Password!',
+                            user_id : id,
                             token: encrypted
                         });
                     }else{
