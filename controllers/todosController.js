@@ -46,10 +46,9 @@ module.exports = {
         try {
             let image = req.file == undefined ? null : req.file.filename;
             let data = {
-                user_id: req.body.user_id,
+                user_id: req.userId,
                 todo: req.body.todo,
-                time: req.body.time,
-                date: req.body.date,
+                datetime: req.body.datetime,
                 image: image
             }
             pool.getConnection(function(err, connection) {
@@ -84,7 +83,7 @@ module.exports = {
     },
     // Delete Todo
     deleteTodo(req, res) {
-        let id = req.body.id;
+        let id = req.params.id;
         try {
             pool.getConnection(function(err, connection) {
                 if (err) throw err;
@@ -117,20 +116,21 @@ module.exports = {
     },
     getTodoActivebyUserID(req, res) {
         try {
-            let id = req.body.user_id;
+            let id = req.userId;
             var date = new Date();
             // YYMMDD
             let yymmdd = (new Date()).toISOString().split('T')[0];
             // Time
             var time = date.getHours() + ":" + date.getMinutes()
 
+            var datetime = yymmdd + ' ' +time;
             pool.getConnection(function(err, connection) {
                 if (err) throw err;
                 connection.query(
                     `
-                    SELECT * FROM todos WHERE user_id = ? AND date >= ? AND time >= ? ORDER BY date ASC;
+                    SELECT * FROM todos WHERE user_id = ? AND datetime >= ? ORDER BY datetime ASC;
                     `, [
-                        id, yymmdd, time
+                        id, datetime
                     ],
                     function(error, results) {
                         if (error) throw error;
@@ -183,8 +183,7 @@ module.exports = {
             let image = req.file == undefined ? null : req.file.filename;
             let data = {
                 todo: req.body.todo,
-                time: req.body.time,
-                date: req.body.date,
+                datetime: req.body.datetime,
                 image: image
             }
             pool.getConnection(function(err, connection) {
@@ -193,7 +192,7 @@ module.exports = {
                     `
                     UPDATE todos SET ? WHERE id = ?
                     `, [
-                        data, req.body.id
+                        data, req.params.id
                     ],
                     function(error, results) {
                         if (error) {

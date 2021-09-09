@@ -22,7 +22,7 @@ module.exports ={
                 if (err) throw err;
                 connection.query(
                     `
-                    SELECT email,fullname FROM users;
+                    SELECT email,fullname,created_at FROM users WHERE role_id=0;
                     `
                 , function (error, results) {
                     if(error) throw error;  
@@ -248,7 +248,8 @@ module.exports ={
                     if(emailfullnameday==decrypted){
                         res.send({ 
                             success: true, 
-                            message: 'Lanjut Reset Password!'
+                            message: 'Lanjut Reset Password!',
+                            token: encrypted
                         });
                     }else{
                         res.status(404).json({
@@ -272,7 +273,74 @@ module.exports ={
     },
     resetPassword(req,res){
         try{
+            let id = req.params.id;
+            let token = req.params.token;
+
+            let new_password = req.body.new_password;
+
+            let algorithm = 'aes256';
+            let key = 'password';
+            let decipher = crypto.createDecipher(algorithm, key);
+            let decrypted = decipher.update(token, 'hex', 'utf8') + decipher.final('utf8');
             
+            pool.getConnection(function(err, connection) {
+                if (err) throw err;
+                connection.query(
+                    `
+                    SELECT * FROM users WHERE id = ?
+                    `
+                , [
+                    id
+                ],
+                function (error, results) {
+                    if(error){
+                        res.status(404).json({
+                            success: false, 
+                            message: 'Gagal ambil data!',
+                        });
+                    }
+                    
+                    let email = results[0].email;
+                    let fullname = results[0].fullname;
+                    var date = new Date();
+                    let day = ("0" + date.getDate()).slice(-2);
+                    let emailfullnameday = fullname+''+email+''+day;
+                    if(emailfullnameday==decrypted){
+                        bcrypt.hash(new_password,10,(err,hash)=>{
+                            if(err){
+                                return res.status(500).json({
+                                    error: err
+                                });
+                            }else{
+                                pool.getConnection(function(err, connection) {
+                                    if (err) throw err;
+                                    connection.query(
+                                        `
+                                        UPDATE users SET password=? WHERE id = ?
+                                        `
+                                    , [
+                                        hash,id
+                                    ],
+                                    function (error, results) {
+                                        if(error) throw error;  
+                                        res.send({ 
+                                            success: true, 
+                                            message: 'Berhasil Reset password!',
+                                        });
+                                    });
+                                    connection.release();
+                                })
+                            }
+                        });
+                    }else{
+                        res.status(404).json({
+                            success: false, 
+                            message: 'Gagal!',
+                        });
+                    }
+                });
+                connection.release();
+            })
         }catch(e){
             res.status(404).json({
                 success: false, 

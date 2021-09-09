@@ -1,0 +1,534 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Todo List API",
+    "version": "1.0.0",
+    "title": "Todo list App"
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Everything about Authentication"
+      
+    },
+    {
+      "name": "Todo List",
+      "description": "Todo List Operation"
+    },
+    {
+      "name": "Admin",
+      "description": "Admin Access"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/api/user/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Create user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "createUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created user object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/user/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User Login",
+        "description": "",
+        "operationId": "createUsersWithArrayInput",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Login"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/user/forgot-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Send Link to Email for Forget Password",
+        "description": "",
+        "operationId": "forgetPassword",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ForgotPassword"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+
+    "/api/user/reset-password/{id}/{token}": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset User Password",
+        "description": "",
+        "operationId": "resetPasswordwithToken",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ResetPassword"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    
+    "/api/todo/add": {
+      "post": {
+        "tags": [
+          "Todo List"
+        ],
+        "summary": "Create Todo",
+        "description": "",
+        "operationId": "createUsersWithListInput",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AddTodo"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/todo/user": {
+      "get": {
+        "tags": [
+          "Todo List"
+        ],
+        "summary": "Get Active Todo list ",
+        "description": "Returns Todo list",
+        "operationId": "getTodoByToken",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/todo/edit/{id}": {
+      "put": {
+        "tags": [
+          "Todo List"
+        ],
+        "summary": "Edit Todo List",
+        "description": "",
+        "operationId": "editTodo",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EditTodo"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/todo/delete": {
+      "delete": {
+        "tags": [
+          "Todo List"
+        ],
+        "summary": "Delete Todo list",
+        "description": "",
+        "operationId": "deleteTodo",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DeleteTodo"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/login": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Admin Login",
+        "description": "",
+        "operationId": "createUsersWithArrayInput",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Login"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/admin/users": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get All users Registered",
+        "description": "Returns Users Registered",
+        "operationId": "getUsers",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+            
+          },
+          "404": {
+            "description": "Failed"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "auth-token",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    
+    "User": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "fullname": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "Login":{
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "ForgotPassword":{
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "ResetPassword":{
+      "type": "object",
+      "properties": {
+        "new_password": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "AddTodo": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "type": "string"
+        },
+        "datetime": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "EditTodo":{
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "todo": {
+          "type": "string"
+        },
+        "datetime": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "DeleteTodo":{
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Tag"
+      }
+    },
+    
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

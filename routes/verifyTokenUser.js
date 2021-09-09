@@ -6,9 +6,18 @@ module.exports = function(req,res,next){
     if(!token) return res.status(401).send('Access Denied');
 
     try{
-        const verified = jwt.verify(token,process.env.USER_KEY);
-        req.user = verified;
-        next();
+        jwt.verify(token, process.env.USER_KEY, function(err, decoded) {
+            if (err)
+            return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+            
+            // if everything good, save to request for use in other routes
+            req.userId = decoded.id;
+            console.log(decoded.id);
+            next();
+        });
+        // const verified = jwt.verify(token,process.env.USER_KEY);
+        // req.user = verified;
+        // next();
     }catch(e){
         res.status(400).send('Invalid Token');
     }

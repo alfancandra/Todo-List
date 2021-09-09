@@ -52,168 +52,27 @@ const swaggerOptions = {
     apis: ["./routes/route.js"]
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+const swaggerDocs = require('./swagger.json');
 router.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
-// GET localhost:3000/api/users/2 => Ambil data semua berdasarkan id = 2
-// router.get('/api/user/:id', users.getDataByID);
-
-// Routes
-/**
- * @swagger
- * /api/user/add:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/user/forgot-password:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/user/password-reset/:id/:token:
- *  get:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/user/reset/:id/:token:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/user/login:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/todos:
- *  get:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/todos/add:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/todos/delete:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/todos/:user_id:
- *  get:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/todos/find:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/todos/edit:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/admin/login:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/admin/login:
- *  post:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
-/**
- * @swagger
- * /api/admin/users:
- *  get:
- *      description: Use to Register a User
- *      responses:
- *          '200':
- *              description: Success Response
- */
-
 // POST localhost:3000/api/user/add => Tambah data ke database
-router.post('/api/user/add', users.addData);
+router.post('/api/user/register', users.addData);
 
 // Forgot password
 router.post('/api/user/forgot-password', users.findEmail);
 
 // Verif Forgot password
-router.get('/api/user/password-reset/:id/:token', users.verifToken);
+router.get('/api/user/reset-password/:id/:token', users.verifToken);
 
 // Reset Password
-router.post('/api/user/reset/:id/:token', users.resetPassword);
+router.post('/api/user/reset-password/:id/:token', users.resetPassword);
 
 // POST localhost:3000/api/users/login => Login users
 router.post('/api/user/login', users.loginUser);
+
+// GET localhost:3000/api/users/2 => Ambil data semua berdasarkan id = 2
+router.get('/api/user/:id', users.getDataByID);
 
 
 
@@ -225,16 +84,16 @@ router.get('/api/todos', verifyUser, todos.getTodoAll);
 router.post('/api/todo/add', verifyUser, upload.single('todoImage'), todos.addTodo);
 
 // Delete one Todolist 
-router.post('/api/todo/delete', verifyUser, todos.deleteTodo);
+router.delete('/api/todo/delete/:id', verifyUser, todos.deleteTodo);
 
 // GET Todo Active by UserID
-router.get('/api/todo/:user_id', verifyUser, todos.getTodoActivebyUserID);
+router.get('/api/todo/user', verifyUser, todos.getTodoActivebyUserID);
 
 // GET Todo by ID
 router.post('/api/todo/find', todos.getTodobyID);
 
 // POST edit todo
-router.post('/api/todo/edit', verifyUser, upload.single('todoImage'), todos.editTodo);
+router.put('/api/todo/edit/:id', verifyUser, upload.single('todoImage'), todos.editTodo);
 
 
 

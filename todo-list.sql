@@ -31,8 +31,7 @@ CREATE TABLE `todos` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `todo` text NOT NULL,
-  `time` time NOT NULL,
-  `date` date NOT NULL,
+  `datetime` datetime NOT NULL,
   `image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
