@@ -1,7 +1,7 @@
 module.exports = {
     multipleStatements  : true,
-    host                : 'localhost',
+    host                : 'z889c2a05-mysql.qovery.io',
     user                : 'root',
-    password            : '',
-    database            : 'todo-list'
+    password            : 'hNSwByQoPLuIqpaw',
+    database            : 'mysql-z889c2a05'
 };
