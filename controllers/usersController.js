@@ -194,19 +194,16 @@ module.exports ={
                     var decrypted = decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
                     let token = encrypted;
                     
-                    const link = `http://localhost:3000/api/user/password-reset/${id}/${token}`;
+                    const link = `https://zbcbcf27c-z9447f5cf-gtw.qovery.io/api/user/reset-password/${id}/${token}`;
                     sendEmail(email, "Password reset", link);
                     res.send({ 
                         success: true, 
-                        message: 'Berhasil ambil data!',
-                        encrypt : encrypted,
-                        decrypt : decrypted,
-                        data: results
+                        message: 'email sent sucessfully'
                     });
                 }catch(e){
                     res.status(404).json({
                         success: false, 
-                        message: 'Gagal ambil data!',
+                        message: 'Gagal!',
                     });
                 }
             });
